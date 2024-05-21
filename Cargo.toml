@@ -29,7 +29,6 @@ members = [
   "starknet-rpc-test",
   "madara-test-runner",
   "starknet-test-utils",
-  "crates/consensus/alephBFT"
 ]
 # All previous except for `starknet-rpc-test`
 # We don't want `cargo test` to trigger its tests
@@ -59,7 +58,6 @@ default-members = [
   "crates/client/eth-client",
   "crates/client/starknet-block-import",
   "starknet-test-utils",
-  "crates/consensus/alephBFT"
 ]
 
 [profile.release]

@@ -314,7 +314,11 @@ name = "alephBFT"
 version = "0.7.0"
 dependencies = [
  "finality-aleph",
+ "madara",
+ "madara-runtime",
  "parity-scale-codec",
+ "sc-consensus 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-service 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
  "scale-info",
 ]
 
@@ -6277,6 +6281,7 @@ dependencies = [
  "async-trait",
  "blockifier",
  "clap",
+ "finality-aleph",
  "frame-benchmarking 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
  "frame-benchmarking-cli",
  "frame-system 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",

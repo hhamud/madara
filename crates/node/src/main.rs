@@ -3,6 +3,7 @@
 
 #[macro_use]
 mod service;
+mod alephBFT;
 mod benchmarking;
 mod chain_spec;
 mod cli;
