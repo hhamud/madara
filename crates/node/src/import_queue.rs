@@ -57,7 +57,7 @@ pub struct BlockImportPipeline {
 }
 
 /// Build the import queue for default sealing given the block import.
-fn build_aura_import_queue(
+pub fn build_aura_import_queue(
     client: Arc<FullClient>,
     config: &Configuration,
     task_manager: &TaskManager,

@@ -310,19 +310,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "alephBFT"
-version = "0.7.0"
-dependencies = [
- "finality-aleph",
- "madara",
- "madara-runtime",
- "parity-scale-codec",
- "sc-consensus 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
- "sc-service 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
- "scale-info",
-]
-
-[[package]]
 name = "allocator-api2"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
