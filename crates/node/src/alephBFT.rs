@@ -2,13 +2,13 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use finality_aleph::{
-    get_aleph_block_import, run_validator_node, AlephBlockImport, AlephConfig, AllBlockMetrics, BlockImporter,
-    ChannelProvider, FavouriteSelectChainProvider, Justification, JustificationTranslator, MillisecsPerBlock, Protocol,
-    ProtocolNaming, RateLimiterConfig, RedirectingBlockImport, SessionPeriod, SubstrateChainStatus, SubstrateNetwork,
-    SyncOracle, TracingBlockImport, ValidatorAddressCache,
+    get_aleph_block_import, AllBlockMetrics, ChannelProvider, FavouriteSelectChainProvider, JustificationTranslator,
+    SubstrateChainStatus, UnitCreationDelay,
 };
-use madara_runtime::{Block, RuntimeApi};
-use sc_consensus_aura::{ImportQueueParams, SlotProportion, StartAuraParams};
+use log::warn;
+use madara_runtime::opaque::Block;
+use madara_runtime::RuntimeApi;
+use sc_consensus_aura::ImportQueueParams;
 use sc_executor::NativeElseWasmExecutor;
 use sc_service::error::Error as ServiceError;
 use sc_service::{new_db_backend, Configuration, TaskManager};
@@ -17,7 +17,7 @@ use sp_api::ConstructRuntimeApi;
 use sp_consensus_aura::sr25519::AuthorityPair;
 
 use crate::genesis_block::MadaraGenesisBlockBuilder;
-use crate::import_queue::{build_manual_seal_queue_pipeline, BlockImportPipeline};
+use crate::import_queue::BlockImportPipeline;
 use crate::service::{BasicImportQueue, ExecutorDispatch, FullBackend, FullClient, FullSelectChain};
 use crate::starknet::{db_config_dir, MadaraBackend};
 
@@ -64,6 +64,8 @@ pub struct AlephBFT {
     no_collection_of_extra_debugging_data: bool,
 }
 
+const DEFAULT_MAX_NON_FINALIZED_BLOCKS: u32 = 20;
+
 impl AlephBFT {
     fn new() -> Self {
         Self {
@@ -72,24 +74,71 @@ impl AlephBFT {
             validator_port: 30343,
             no_backup: true,
             backup_path: None,
-            max_nonfinalized_blocks: 20,
+            max_nonfinalized_blocks: DEFAULT_MAX_NON_FINALIZED_BLOCKS,
             enable_pruning: false,
             alephbft_bit_rate_per_connection: 64 * 1024,
             no_collection_of_extra_debugging_data: false,
         }
     }
+
+    pub fn unit_creation_delay(&self) -> UnitCreationDelay {
+        UnitCreationDelay(self.unit_creation_delay)
+    }
+
+    pub fn external_addresses(&self) -> Vec<String> {
+        self.public_validator_addresses.clone().unwrap_or_default()
+    }
+
+    pub fn set_dummy_external_addresses(&mut self) {
+        self.public_validator_addresses = Some(vec!["192.0.2.43:30343".to_string()])
+    }
+
+    pub fn validator_port(&self) -> u16 {
+        self.validator_port
+    }
+
+    pub fn backup_path(&self) -> Option<PathBuf> {
+        self.backup_path.clone()
+    }
+
+    pub fn no_backup(&self) -> bool {
+        self.no_backup
+    }
+
+    pub fn max_nonfinalized_blocks(&self) -> u32 {
+        if self.max_nonfinalized_blocks != DEFAULT_MAX_NON_FINALIZED_BLOCKS {
+            warn!(
+                "Running block production with a value of max-nonfinalized-blocks {}, which is not the default of 20. \
+                 THIS MIGHT BE CONSIDERED MALICIOUS BEHAVIOUR AND RESULT IN PENALTIES!",
+                self.max_nonfinalized_blocks
+            );
+        }
+        self.max_nonfinalized_blocks
+    }
+
+    pub fn enable_pruning(&self) -> bool {
+        self.enable_pruning
+    }
+
+    pub fn alephbft_bit_rate_per_connection(&self) -> u64 {
+        self.alephbft_bit_rate_per_connection
+    }
+
+    pub fn no_collection_of_extra_debugging_data(&self) -> bool {
+        self.no_collection_of_extra_debugging_data
+    }
 }
 
-type FullPool = sc_transaction_pool::FullPool<Block, FullClient>;
 type Service = sc_service::PartialComponents<
     FullClient,
     FullBackend,
     FullSelectChain,
     BasicImportQueue,
-    FullPool,
+    sc_transaction_pool::FullPool<Block, FullClient>,
     (Arc<MadaraBackend>, BlockImportPipeline, Option<Telemetry>),
 >;
 
+#[allow(clippy::type_complexity)]
 pub fn new_aleph_partial(config: &Configuration) -> Result<Service, ServiceError>
 where
     RuntimeApi: ConstructRuntimeApi<Block, FullClient>,
@@ -192,6 +241,8 @@ where
         compatibility_mode: Default::default(),
     })?;
 
+    let import_pipeline = BlockImportPipeline { block_import: Box::new(aleph_block_import), grandpa_link: None };
+
     Ok(sc_service::PartialComponents {
         client,
         backend,
@@ -200,10 +251,10 @@ where
         keystore_container,
         select_chain,
         transaction_pool,
-        other: (madara_backend, None, telemetry),
+        other: (madara_backend, import_pipeline, telemetry),
     })
 }
 
-pub fn new_aleph_full(config: &Configuration) -> Result<TaskManager, ServiceError> {
+pub fn new_aleph_full(config: &Configuration, aleph_config: AlephBFT) -> Result<TaskManager, ServiceError> {
     todo!()
 }
