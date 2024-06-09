@@ -88,7 +88,7 @@ dependencies = [
 [[package]]
 name = "aggregator"
 version = "0.6.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "aleph-bft-rmc 0.11.1",
  "aleph-bft-types 0.11.0",
@@ -175,6 +175,100 @@ dependencies = [
 ]
 
 [[package]]
+name = "aleph-bft"
+version = "0.36.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f930b4c0d4a6b66533422e7ee62f5bab08949ada6d275298de909e95bc75b4ce"
+dependencies = [
+ "aleph-bft-rmc 0.13.0",
+ "aleph-bft-types 0.13.0",
+ "anyhow",
+ "async-trait",
+ "derivative",
+ "futures",
+ "futures-timer",
+ "itertools 0.12.1",
+ "log",
+ "parity-scale-codec",
+ "parking_lot 0.12.1",
+ "rand 0.8.5",
+ "thiserror",
+]
+
+[[package]]
+name = "aleph-bft-consensus"
+version = "0.7.0"
+dependencies = [
+ "aleph-bft 0.36.5",
+ "async-trait",
+ "blockifier",
+ "clap",
+ "finality-aleph",
+ "frame-benchmarking 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "frame-benchmarking-cli",
+ "frame-system 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "futures",
+ "jsonrpsee",
+ "log",
+ "madara-runtime",
+ "mc-commitment-state-diff",
+ "mc-db",
+ "mc-eth-client",
+ "mc-genesis-data-provider",
+ "mc-l1-messages",
+ "mc-mapping-sync",
+ "mc-rpc",
+ "mc-starknet-block-import",
+ "mc-storage",
+ "mp-block",
+ "mp-digest-log",
+ "mp-felt",
+ "mp-sequencer-address",
+ "num-bigint",
+ "pallet-starknet",
+ "pallet-starknet-runtime-api",
+ "reqwest",
+ "sc-basic-authorship",
+ "sc-cli",
+ "sc-client-api 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-consensus 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-consensus-aura 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-consensus-grandpa",
+ "sc-consensus-manual-seal",
+ "sc-executor 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-network 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-network-sync 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-offchain",
+ "sc-rpc-api 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-service 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-telemetry 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-transaction-pool 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sc-transaction-pool-api 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "serde",
+ "serde_json",
+ "sha3",
+ "sp-api 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-block-builder 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-blockchain 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-consensus 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-consensus-aura 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-consensus-grandpa 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-core 21.0.0 (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-inherents 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-keyring",
+ "sp-offchain 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-runtime 24.0.0 (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-state-machine 0.28.0 (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-statement-store 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "sp-timestamp 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "substrate-frame-rpc-system",
+ "substrate-prometheus-endpoint 0.10.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
+ "thiserror",
+ "try-runtime-cli",
+ "url",
+]
+
+[[package]]
 name = "aleph-bft-crypto"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -192,6 +286,19 @@ name = "aleph-bft-crypto"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39a9bcf1ff87c43606157ffd406751deac3accce0db37e1073767bd43c57b12f"
+dependencies = [
+ "async-trait",
+ "bit-vec",
+ "derive_more",
+ "log",
+ "parity-scale-codec",
+]
+
+[[package]]
+name = "aleph-bft-crypto"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7fdf0c124883ef234a6262e43b9ed1d214e9f9c8744a88f1f2451c2b6efe4290"
 dependencies = [
  "async-trait",
  "bit-vec",
@@ -230,6 +337,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aleph-bft-rmc"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "878948f17ae09afc0b62162a22325b8828fa1f46c90109bde7261224e2e09e34"
+dependencies = [
+ "aleph-bft-crypto 0.9.0",
+ "aleph-bft-types 0.13.0",
+ "async-trait",
+ "futures",
+ "futures-timer",
+ "log",
+ "parity-scale-codec",
+]
+
+[[package]]
 name = "aleph-bft-types"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -254,9 +376,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aleph-bft-types"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2bca9d19f587215da2b6c50b5e71f9addbf2305153f850dad3f9496ed67e28bb"
+dependencies = [
+ "aleph-bft-crypto 0.9.0",
+ "async-trait",
+ "futures",
+ "parity-scale-codec",
+]
+
+[[package]]
 name = "aleph-runtime"
 version = "0.13.3"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "frame-executive 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
  "frame-support 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
@@ -3686,7 +3820,7 @@ dependencies = [
 [[package]]
 name = "finality-aleph"
 version = "0.10.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "aggregator 0.4.0",
  "aggregator 0.6.0",
@@ -6265,10 +6399,10 @@ dependencies = [
 name = "madara"
 version = "0.7.0"
 dependencies = [
+ "aleph-bft-consensus",
  "async-trait",
  "blockifier",
  "clap",
- "finality-aleph",
  "frame-benchmarking 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
  "frame-benchmarking-cli",
  "frame-system 4.0.0-dev (git+https://github.com/massalabs/polkadot-sdk?branch=release-polkadot-v1.3.0-std)",
@@ -7219,7 +7353,7 @@ dependencies = [
 [[package]]
 name = "network-clique"
 version = "0.6.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "async-trait",
  "bytes",
@@ -7559,7 +7693,7 @@ checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 [[package]]
 name = "pallet-aleph"
 version = "0.6.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "frame-support 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
  "frame-system 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
@@ -7652,7 +7786,7 @@ dependencies = [
 [[package]]
 name = "pallet-committee-management"
 version = "0.2.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "frame-support 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
  "frame-system 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
@@ -7727,7 +7861,7 @@ dependencies = [
 [[package]]
 name = "pallet-elections"
 version = "0.6.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "frame-election-provider-support",
  "frame-support 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
@@ -7850,7 +7984,7 @@ dependencies = [
 [[package]]
 name = "pallet-operations"
 version = "0.1.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "frame-support 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
  "frame-system 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
@@ -8162,7 +8296,7 @@ dependencies = [
 [[package]]
 name = "pallets-support"
 version = "0.1.4"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "frame-support 4.0.0-dev (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
  "sp-std 8.0.0 (git+https://github.com/Cardinal-Cryptography/polkadot-sdk.git?branch=aleph-v1.2.0)",
@@ -8688,7 +8822,7 @@ dependencies = [
 [[package]]
 name = "primitives"
 version = "0.8.1"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "parity-scale-codec",
  "scale-info",
@@ -9072,7 +9206,7 @@ dependencies = [
 [[package]]
 name = "rate-limiter"
 version = "0.1.0"
-source = "git+https://github.com/Cardinal-Cryptography/aleph-node.git?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
+source = "git+https://github.com/Cardinal-Cryptography/aleph-node?tag=r-13.3#87ebe7c4856b4f3365ddba55b55089713a96631a"
 dependencies = [
  "futures",
  "log",

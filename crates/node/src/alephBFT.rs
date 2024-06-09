@@ -1,25 +1,49 @@
+#[cfg(feature = "aleph_bft")]
 use std::path::PathBuf;
 use std::sync::Arc;
+use std::time::Duration;
 
 use finality_aleph::{
-    get_aleph_block_import, AllBlockMetrics, ChannelProvider, FavouriteSelectChainProvider, JustificationTranslator,
-    SubstrateChainStatus, UnitCreationDelay,
+    AlephBlockImport, AllBlockMetrics, JustificationTranslator, SubstrateChainStatus, TracingBlockImport,
+    UnitCreationDelay,
 };
+use futures::channel::mpsc;
+use futures::lock::Mutex;
+use futures::{future, FutureExt, StreamExt};
 use log::warn;
 use madara_runtime::opaque::Block;
-use madara_runtime::RuntimeApi;
-use sc_consensus_aura::ImportQueueParams;
+use madara_runtime::{RuntimeApi, StarknetHasher};
+use mc_eth_client::config::EthereumClientConfig;
+use mc_genesis_data_provider::OnDiskGenesisConfig;
+use mc_l1_messages;
+use mc_mapping_sync::MappingSyncWorker;
+use mc_storage::overrides_handle;
+use mp_sequencer_address::{DEFAULT_SEQUENCER_ADDRESS, SEQ_ADDR_STORAGE_KEY};
+use sc_basic_authorship::ProposerFactory;
+use sc_client_api::{Backend, BlockchainEvents};
+use sc_consensus::{
+    BlockCheckParams, BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult, JustificationImport,
+};
+use sc_consensus_aura::{ImportQueueParams, SlotProportion, StartAuraParams};
 use sc_executor::NativeElseWasmExecutor;
 use sc_service::error::Error as ServiceError;
-use sc_service::{new_db_backend, Configuration, TaskManager};
+use sc_service::{new_db_backend, Configuration, TFullClient, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
+use sc_transaction_pool_api::OffchainTransactionPoolFactory;
 use sp_api::ConstructRuntimeApi;
+use sp_blockchain::HeaderBackend;
 use sp_consensus_aura::sr25519::AuthorityPair;
+use sp_core::offchain::OffchainStorage;
+use sp_offchain::STORAGE_PREFIX;
+use sp_runtime::traits::Block as BlockT;
 
 use crate::genesis_block::MadaraGenesisBlockBuilder;
 use crate::import_queue::BlockImportPipeline;
+use crate::rpc::StarknetDeps;
 use crate::service::{BasicImportQueue, ExecutorDispatch, FullBackend, FullClient, FullSelectChain};
 use crate::starknet::{db_config_dir, MadaraBackend};
+
+// type AlephMadaraBlockImport = sc_consensus::block_import::BlockImport<Block>;
 
 /// Contains the service components for the Aleph Consensus Mechanism
 pub struct AlephBFT {
@@ -180,7 +204,7 @@ where
         genesis_block_builder,
     )?;
 
-    let client = Arc::new(client);
+    let client: Arc<TFullClient<_, _, _>> = Arc::new(client);
 
     let telemetry = telemetry.map(|(worker, telemetry)| {
         task_manager.spawn_handle().spawn("telemetry", None, worker.run());
@@ -203,18 +227,11 @@ where
         SubstrateChainStatus::new(backend.clone())
             .map_err(|e| ServiceError::Other(format!("failed to set up chain status: {e}")))?,
     );
-    let metrics = AllBlockMetrics::new(config.prometheus_registry());
-    let justification_channel_provider = ChannelProvider::new();
-    let select_chain_provider = FavouriteSelectChainProvider::default();
 
-    let aleph_block_import = get_aleph_block_import(
-        client.clone(),
-        justification_channel_provider.get_sender(),
-        justification_translator,
-        select_chain_provider.select_chain(),
-        metrics.clone(),
-    );
-
+    let (justification_tx, justification_rx) = mpsc::unbounded();
+    //
+    let aleph_block_import = AlephBlockImport::new(client.clone(), justification_tx.clone(), justification_translator);
+    //
     let slot_duration = sc_consensus_aura::slot_duration(&*client)?;
 
     // DO NOT change Aura parameters without updating the finality-aleph sync accordingly,
@@ -253,8 +270,4 @@ where
         transaction_pool,
         other: (madara_backend, import_pipeline, telemetry),
     })
-}
-
-pub fn new_aleph_full(config: &Configuration, aleph_config: AlephBFT) -> Result<TaskManager, ServiceError> {
-    todo!()
 }

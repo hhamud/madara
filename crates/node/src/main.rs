@@ -3,6 +3,7 @@
 
 #[macro_use]
 mod service;
+#[cfg(feature = "aleph_bft")]
 mod alephBFT;
 mod benchmarking;
 mod chain_spec;

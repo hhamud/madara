@@ -1,25 +1,14 @@
 [package]
-name = "madara"
-version.workspace = true
+name = "aleph-bft-consensus"
+authors.workspace = true
 edition.workspace = true
-description = "Madara node."
-authors = [
-    "Abdelhamid Bakhta <@keep-starknet-strange>",
-    "Substrate DevHub <https://github.com/substrate-developer-hub>",
-]
-homepage = "https://github.com/keep-starknet-strange/madara"
-license = "MIT"
-publish = false
-repository = "https://github.com/keep-starknet-strange/madara"
-build = "build.rs"
+repository.workspace = true
+version.workspace = true
 
-[package.metadata.docs.rs]
-targets = ["x86_64-unknown-linux-gnu"]
-
-[[bin]]
-name = "madara"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+aleph-bft = "0.36"
 async-trait = "0.1"
 clap = { workspace = true, features = ["derive"] }
 futures = { workspace = true, features = ["thread-pool"] }
@@ -100,34 +89,10 @@ mp-sequencer-address = { workspace = true, features = ["client"] }
 blockifier = { workspace = true }
 
 # AlephBFT consensus module
-aleph-bft-consensus = { path = "../consensus/aleph-bft-consensus", optional = true }
+finality-aleph = {git = "https://github.com/Cardinal-Cryptography/aleph-node", tag = "r-13.3"}
 
 # CLI-specific dependencies
 reqwest = { workspace = true, features = ["blocking"] }
 serde_json = { workspace = true }
 try-runtime-cli = { optional = true, git = "https://github.com/massalabs/polkadot-sdk", branch = "release-polkadot-v1.3.0-std" }
 url = { workspace = true }
-
-[build-dependencies]
-substrate-build-script-utils = { workspace = true }
-
-[features]
-# Dependencies that are only required if runtime benchmarking should be build.
-runtime-benchmarks = [
-    "madara-runtime/runtime-benchmarks",
-    "frame-benchmarking/runtime-benchmarks",
-    "frame-benchmarking-cli/runtime-benchmarks",
-]
-# Enable features that allow the runtime to be tried and debugged. Name might be subject to change
-# in the near future.
-try-runtime = ["madara-runtime/try-runtime", "try-runtime-cli/try-runtime"]
-disable-transaction-fee = ["madara-runtime/disable-transaction-fee"]
-# Load sharingan chain-specs during the compilation
-# This is the way to run a sharingan chain
-sharingan = []
-# Enables Sierra class verification for foreign blocks only + disabled in manual sealing mode
-sn-block-import = ["dep:mc-starknet-block-import"]
-# Enables Sierra class verification for both own and foreign blocks only + enabled for manual sealing mode
-sn-block-import-testing = ["sn-block-import"]
-# Enables use of alephbft consensus engine
-aleph_bft = ["aleph-bft-consensus"]
